@@ -65,11 +65,17 @@ router.post('/login', checkUsernameExists, (req, res, next) => {
   }
  */
 
-router.get('/api/auth/logout', (req, res, next) => {
+router.get('/logout', (req, res, next) => {
   if(req.session.user){
-
+    req.session.destroy(err => {
+      if(err){
+        next(err);
+      }else{
+        res.json({ message : 'logged out'})
+      }
+    });
   }else{
-    next({ status: 401, message: 'no one logged in'})
+    next({ status: 200, message: 'no session'})
   }
 })
 /**
