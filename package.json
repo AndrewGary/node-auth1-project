@@ -8,7 +8,7 @@
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
-    "push": "git add . && git commit -m 'test'"
+    "push": "git add . && git commit -m 'test' && git push"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
