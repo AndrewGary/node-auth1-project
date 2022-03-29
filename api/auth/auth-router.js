@@ -29,18 +29,25 @@ const { checkUsernameFree, checkUsernameExists, checkPasswordLength } = require(
   }
  */
 router.post('/register', checkUsernameFree, checkPasswordLength, (req, res, next) => {
-  console.log('passed middleware');
-  Users.add(req.body)
+  const hash = bcrypt.hashSync(req.body.password);
+  
+  Users.add({ username: req.body.username, password: hash})
   .then(resp => {
     res.json(resp);
   })
   .catch(error => {
-    next(error);
+    next(error); 
   })
 })
 
-router.post('/api/auth/login', (req, res, next) => {
-
+router.post('/login', checkUsernameExists, (req, res, next) => {
+  if(bcrypt.compareSync(req.body.password, req.user.password)){
+     
+    req.session.user = req.user
+    res.json({ message: `Welcome ${req.user.username}`})
+  }else{
+    next({ status: 401, message: 'Invalid credentials'})
+  }
 })
 /**
   2 [POST] /api/auth/login { "username": "sue", "password": "1234" }

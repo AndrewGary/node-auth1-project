@@ -27,9 +27,10 @@ async function findById(user_id) {
 async function add(user) {
   try{
     const [id] = await db('users').insert(user)
-    return db('users').where('user_id', id);
-  }catch{
-    
+    const user1 = await db('users').select('user_id', 'username').where('user_id', id);
+    return user1[0];
+  }catch(error){
+    throw new Error(error);
   }
 }
 

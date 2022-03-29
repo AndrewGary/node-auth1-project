@@ -9,8 +9,11 @@ const Users = require('../users/users-model');
   }
 */
 function restricted(req, res, next) {
-  console.log('restricted connected');
-  next();
+  if(req.session.user){
+    next()
+  }else{
+    next({ status: 401, message: 'you shall not pass'})
+  }
 }
 
 /*
@@ -48,9 +51,10 @@ async function checkUsernameExists(req, res, next) {
     const test = await Users.findBy({ username: req.body.username });
 
     if(test.length){
-      next({ status: 401, message: 'Invalid credentials'})
-    }else{
+      req.user = test[0];
       next();
+    }else{
+      next({ status: 401, message: 'Invalid credentials'})
     }
   }catch(error){
     next(error);
@@ -66,15 +70,11 @@ async function checkUsernameExists(req, res, next) {
   }
 */
 function checkPasswordLength(req, res, next) {
-  if(req.body.password){
-    if(req.body.password.length < 8){
-      next({status: 400, message: 'password must be 8 characters or longer'})
+    if(req.body.password.length < 4){
+      next({status: 422, message: 'Password must be longer than 3 chars'})
     }else{
       next();
     }
-  } else{
-    next({status: 400, message: 'password is required'});
-  }
 }
 
 // Don't forget to add these to the `exports` object so they can be required in other modules
