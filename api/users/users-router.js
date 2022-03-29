@@ -19,8 +19,6 @@ router.get('/:id', (req, res, next) => {
   
   Users.findById(req.params.id)
   .then(resp => {
-    console.log('yeahhh')
-    console.log('resp: ', resp);
     res.status(200).json(resp);
   })
   .catch(error => {
